@@ -1,6 +1,5 @@
 package com.kodality.vacation.request;
 
-import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.serde.annotation.Serdeable;
 
@@ -27,14 +26,6 @@ public class VacationRequest {
   private LocalDate vacationEnd;
   private String comment;
   private LocalDateTime submittedAt;
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Long getId() {
-    return id;
-  }
 
   // TODO: add missing fields
 }
