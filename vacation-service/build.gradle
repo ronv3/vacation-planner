@@ -25,6 +25,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     runtimeOnly "org.postgresql:postgresql" // SQL
     runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     testImplementation("io.micronaut:micronaut-http-client")
 }
 

@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Singleton
@@ -21,7 +20,7 @@ public class VacationRequestRepository {
 
   // SQL query
   public List<VacationRequest> getVacationRequests() {
-    String sql = "SELECT id, employee_name, submitted_at, comment FROM vacation_request";
+    String sql = "SELECT id, employee_name, vacation_start, vacation_end, submitted_at, comment FROM vacation_request";
     return jdbcTemplate.query(sql, new VacationRequestRowMapper());
   }
 
@@ -32,10 +31,10 @@ public class VacationRequestRepository {
       return new VacationRequest()
               .setId(rs.getLong("id"))
               .setEmployeeName(rs.getString("employee_name"))
-              .setVacationStart(rs.getObject("vacation_start", LocalDate.class))
-              .setVacationEnd(rs.getObject("vacation_end", LocalDate.class))
+              .setVacationStart(rs.getObject("vacation_start", LocalDate.class)) // LocalDate for DATE type
+              .setVacationEnd(rs.getObject("vacation_end", LocalDate.class))     // LocalDate for DATE type
               .setComment(rs.getString("comment"))
-              .setSubmittedAt(rs.getObject("submitted_at", LocalDateTime.class));
+              .setSubmittedAt(rs.getTimestamp("submitted_at").toLocalDateTime()); // LocalDateTime for TIMESTAMP type
     }
   }
 }

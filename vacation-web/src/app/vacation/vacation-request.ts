@@ -1,4 +1,5 @@
 export interface VacationRequest {
+  id: number;
   employee: string;
   startDate: Date;
   endDate: Date;
