@@ -6,10 +6,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="0" author="ron">
-        <dropTable tableName="vacation_request"/>
-    </changeSet>
-
     <changeSet id="1" author="ron">
         <createTable tableName="vacation_request">
             <column name="id" type="BIGINT" autoIncrement="true">
