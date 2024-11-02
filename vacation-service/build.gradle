@@ -17,8 +17,14 @@ dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa") // Micronaut Liquibase jpa
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari") // Micronaut Liquibase jdbc
+    implementation("io.micronaut.liquibase:micronaut-liquibase") // Micronaut Liquibase
+    implementation("org.slf4j:jul-to-slf4j:1.7.30") // Micronaut Liquibase integration JUL and Logback
+    implementation("org.liquibase:liquibase-core") // Micronaut Liquibase
     compileOnly("io.micronaut:micronaut-http-client")
     compileOnly("org.projectlombok:lombok")
+    runtimeOnly "org.postgresql:postgresql" // Micronaut Liquibase
     runtimeOnly("ch.qos.logback:logback-classic")
     testImplementation("io.micronaut:micronaut-http-client")
 }
