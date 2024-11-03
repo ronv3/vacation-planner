@@ -1,0 +1,59 @@
+<p-button type="button" label="Request Vacation" (click)="openModal()"></p-button>
+
+<p-dialog [(visible)]="isModalOpen" [modal]="true" header="Vacation Request" [style]="{ width: '30rem' }">
+  <form [formGroup]="vacationRequestForm" (ngSubmit)="onSubmit()">
+
+    <div class="p-field">
+      <label>Employee</label>
+      <p-dropdown
+        [options]="employees"
+        [style]="{ width: '100%' }"
+        optionLabel="employeeName"
+        optionValue="id"
+        formControlName="employeeId"
+        placeholder="Select an Employee">
+      </p-dropdown>
+      <div *ngIf="vacationRequestForm.get('employeeId')?.invalid && vacationRequestForm.get('employeeId')?.touched" class="error-message">
+        Employee selection is required.
+      </div>
+    </div>
+
+    <div class="p-field">
+      <label>Vacation Dates</label>
+      <p-calendar
+        [(ngModel)]="date1"
+        formControlName="vacationRange"
+        selectionMode="range"
+        [style]="{ width: '100%' }"
+        [showIcon]="true"
+        [showOnFocus]="false"
+        [touchUI]="true"
+        inputId="buttondisplay"
+        dateFormat="dd.mm.yy"/>
+      <div *ngIf="vacationRequestForm.get('vacationRange')?.invalid && vacationRequestForm.get('vacationRange')?.touched" class="error-message">
+        Vacation dates are required.
+      </div>
+    </div>
+
+    <div class="p-field">
+      <label>Comments</label>
+      <textarea
+        formControlName="comments"
+        rows="3"
+        placeholder="Enter comments"
+        cols="30"
+        pInputTextarea >
+      </textarea>
+      <div *ngIf="vacationRequestForm.get('comments')?.errors?.['maxlength'] && vacationRequestForm.get('comments')?.touched" class="error-message">
+        Maximum length is 200 characters.
+      </div>
+    </div>
+
+    <div class="p-dialog-footer">
+      <button pButton type="button" label="Cancel" (click)="closeModal()"></button>
+      <button pButton type="submit" label="Submit Request" [disabled]="vacationRequestForm.invalid"></button>
+    </div>
+
+  </form>
+</p-dialog>
+

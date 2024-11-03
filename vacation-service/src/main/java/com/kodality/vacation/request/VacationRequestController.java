@@ -2,11 +2,9 @@ package com.kodality.vacation.request;
 
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.Post;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -26,7 +24,8 @@ public class VacationRequestController {
     }
 
     @Post
-    public HttpResponse<?> createVacationRequest(VacationRequest vacationRequest) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public HttpResponse<?> createVacationRequest(@Body VacationRequest vacationRequest) {
         try {
             vacationRequestService.createVacationRequest(vacationRequest);
             return HttpResponse.status(HttpStatus.CREATED);

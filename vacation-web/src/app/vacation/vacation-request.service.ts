@@ -12,4 +12,10 @@ export class VacationRequestService {
     return this.http.get<VacationRequest[]>('/api/vacation-requests');
   }
 
+  public saveVacationRequest(request: VacationRequest): Observable<VacationRequest> {
+    return this.http.post<VacationRequest>('/api/vacation-requests', request, {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 }

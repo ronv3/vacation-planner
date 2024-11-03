@@ -1,6 +1,5 @@
 export interface VacationRequest {
-  id: number;
-  employeeName: string;
+  employeeId: number;
   vacationStart: Date;
   vacationEnd: Date;
   comment: string;
