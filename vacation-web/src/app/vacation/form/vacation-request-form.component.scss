@@ -1,0 +1,44 @@
+.modal-content {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: auto;
+}
+
+.p-dialog-footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.p-dialog-footer button {
+  width: 170px;
+}
+.error-message {
+  color: red;
+  font-size: small;
+  margin-top: 5px;
+}
+.p-field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 100%;
+}
+
+.p-field label {
+  color: #374151;
+  font-weight: bold;
+  font-size: medium;
+  margin-bottom: 5px;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
