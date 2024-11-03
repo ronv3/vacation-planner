@@ -18,10 +18,22 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // SQL query
+    // SQL query - find all employees.
     public List<Employee> getEmployees() {
         String sql = "SELECT id, employee_name, remaining_vacation_days FROM employees";
         return jdbcTemplate.query(sql, new EmployeeRepository.EmployeeRowMapper());
+    }
+
+    // SQL query - find employee by id.
+    public Employee findById(long id) {
+        String sql = "Select * FROM employees WHERE id = ?";
+        // TODO: Fix deprecated method
+        return jdbcTemplate.query(sql, new Object[] {id}, new EmployeeRowMapper()).getFirst();
+    }
+
+    public void updateRemainingVacationDays(Long id, int newRemainingDays) {
+        String sql = "UPDATE employees SET remaining_vacation_days = ? WHERE id = ?";
+        jdbcTemplate.update(sql, newRemainingDays, id);
     }
 
     // Row mapper - convert data from a database to java object.

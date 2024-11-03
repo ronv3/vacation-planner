@@ -6,11 +6,11 @@ import io.micronaut.http.annotation.Get;
 import java.util.List;
 
 @Controller("employees")
-public class EmployeesController {
+public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    public EmployeesController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
