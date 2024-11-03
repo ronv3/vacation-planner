@@ -6,28 +6,15 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="7" author="ron">
-        <dropTable tableName="vacation_request"/>
-    </changeSet>
-
-    <changeSet id="5" author="ron">
-        <createTable tableName="vacation_request">
+    <changeSet id="3" author="ron">
+        <createTable tableName="employees">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="employee_id" type="BIGINT">
+            <column name="employee_name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="vacation_start" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="vacation_end" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="comment" type="VARCHAR(50)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="submitted_at" type="DATE">
+            <column name="remaining_vacation_days" type="INT">
                 <constraints nullable="false"/>
             </column>
         </createTable>

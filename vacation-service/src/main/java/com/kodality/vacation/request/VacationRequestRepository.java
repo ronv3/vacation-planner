@@ -20,7 +20,10 @@ public class VacationRequestRepository {
 
   // SQL query
   public List<VacationRequest> getVacationRequests() {
-    String sql = "SELECT id, employee_name, vacation_start, vacation_end, submitted_at, comment FROM vacation_request";
+    String sql = """
+        SELECT vr.id, e.employee_name, vr.vacation_start, vr.vacation_end, vr.submitted_at, vr.comment FROM vacation_request vr
+        JOIN employees e ON vr.employee_id = e.id
+    """;
     return jdbcTemplate.query(sql, new VacationRequestRowMapper());
   }
 
@@ -31,10 +34,10 @@ public class VacationRequestRepository {
       return new VacationRequest()
               .setId(rs.getLong("id"))
               .setEmployeeName(rs.getString("employee_name"))
-              .setVacationStart(rs.getObject("vacation_start", LocalDate.class)) // LocalDate for DATE type
-              .setVacationEnd(rs.getObject("vacation_end", LocalDate.class))     // LocalDate for DATE type
+              .setVacationStart(rs.getObject("vacation_start", LocalDate.class))
+              .setVacationEnd(rs.getObject("vacation_end", LocalDate.class))
               .setComment(rs.getString("comment"))
-              .setSubmittedAt(rs.getTimestamp("submitted_at").toLocalDateTime()); // LocalDateTime for TIMESTAMP type
+              .setSubmittedAt(rs.getTimestamp("submitted_at").toLocalDateTime());
     }
   }
 }

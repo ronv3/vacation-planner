@@ -6,37 +6,37 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="2" author="ron">
+    <changeSet id="9" author="ron">
         <insert tableName="vacation_request">
-            <column name="employee_name" value="Kadri Täht"/>
+            <column name="employee_id" value="0"/>
             <column name="vacation_start" valueDate="2024-07-15"/>
             <column name="vacation_end" valueDate="2024-07-28"/>
             <column name="comment" value="Summer vacation"/>
             <column name="submitted_at" valueDate="2023-12-30"/>
         </insert>
         <insert tableName="vacation_request">
-            <column name="employee_name" value="Peeter Kuningas"/>
+            <column name="employee_id" value="1"/>
             <column name="vacation_start" valueDate="2024-03-18"/>
             <column name="vacation_end" valueDate="2024-03-24"/>
             <column name="comment" value="Agreed with manager"/>
             <column name="submitted_at" valueDate="2024-01-03"/>
         </insert>
         <insert tableName="vacation_request">
-            <column name="employee_name" value="Meelis Kala"/>
+            <column name="employee_id" value="2"/>
             <column name="vacation_start" valueDate="2024-04-04"/>
             <column name="vacation_end" valueDate="2024-05-04"/>
             <column name="comment" value=""/>
             <column name="submitted_at" valueDate="2024-02-02"/>
         </insert>
         <insert tableName="vacation_request">
-            <column name="employee_name" value="Peeter Kuningas"/>
+            <column name="employee_id" value="1"/>
             <column name="vacation_start" valueDate="2024-06-03"/>
             <column name="vacation_end" valueDate="2024-06-15"/>
             <column name="comment" value="Summer vacation"/>
             <column name="submitted_at" valueDate="2024-02-06"/>
         </insert>
         <insert tableName="vacation_request">
-            <column name="employee_name" value="Kadri Täht"/>
+            <column name="employee_id" value="0"/>
             <column name="vacation_start" valueDate="2024-03-14"/>
             <column name="vacation_end" valueDate="2024-03-15"/>
             <column name="comment" value=""/>
