@@ -15,13 +15,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class VacationRequest {
 
-  private Long id;
+    private Long id;
 
-  private String employeeName;
-  private LocalDate vacationStart;
-  private LocalDate vacationEnd;
-  private String comment;
-  private LocalDateTime submittedAt;
-
-  // TODO: add missing fields
+    private long employeeId;
+    private LocalDate vacationStart;
+    private LocalDate vacationEnd;
+    private String comment;
+    private LocalDateTime submittedAt;
 }

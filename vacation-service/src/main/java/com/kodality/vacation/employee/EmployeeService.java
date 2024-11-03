@@ -15,7 +15,15 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    public Employee getEmployeeById(long id) {
+        return employeeRepository.findById(id);
+    }
+
     public List<Employee> getEmployees() {
         return employeeRepository.getEmployees();
+    }
+
+    public void updateRemainingVacationDays(Long id, int newRemainingDays) {
+        employeeRepository.updateRemainingVacationDays(id, newRemainingDays);
     }
 }
