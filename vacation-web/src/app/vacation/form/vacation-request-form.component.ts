@@ -19,6 +19,8 @@ import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
 import {NgIf} from "@angular/common";
 import {InputTextareaModule} from "primeng/inputtextarea";
+import {VacationRequest} from "../vacation-request";
+import {VacationRequestService} from "../vacation-request.service";
 
 export function dateRangeValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -49,6 +51,7 @@ export class VacationRequestFormComponent implements OnInit {
 
   constructor(
     private employeeService: EmployeeService,
+    private vacationRequestService: VacationRequestService,
     private fb: FormBuilder,
     private http: HttpClient,
     private primengConfig: PrimeNGConfig
@@ -81,13 +84,19 @@ export class VacationRequestFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.vacationRequestForm.value)
-    if (this.vacationRequestForm.valid) { // Check if form is valid before submission
-      const requestData = this.vacationRequestForm.value;
-      this.http.post('/api/vacation-requests', requestData).subscribe(response => {
-        console.log('Vacation request submitted:', response);
-        this.closeModal(); // Close modal after submission
-      });
+    if (this.vacationRequestForm.valid) {
+      const formValues = this.vacationRequestForm.value;
+
+      const requestData : VacationRequest = {
+        employeeId: formValues.employeeId,
+        vacationStart: new Date(formValues.vacationRange[0]),
+        vacationEnd: new Date(formValues.vacationRange[1]),
+        comment: formValues.comments,
+        submittedAt: new Date()
+      };
+
+      this.vacationRequestService.saveVacationRequest(requestData);
+
     }
   }
 }

@@ -15,8 +15,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class VacationRequest {
 
-    private Long id;
-
     private long employeeId;
     private LocalDate vacationStart;
     private LocalDate vacationEnd;
