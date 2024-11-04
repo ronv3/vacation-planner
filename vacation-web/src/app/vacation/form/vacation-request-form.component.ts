@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { EmployeeService } from '../employee.service';
 import {
   AbstractControl,
@@ -9,7 +9,6 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Employee } from '../employee';
 import {DialogModule} from "primeng/dialog";
 import {DropdownModule} from "primeng/dropdown";
@@ -47,13 +46,13 @@ export class VacationRequestFormComponent implements OnInit {
   public employees: Employee[] = [];
   public vacationRequestForm: FormGroup;
   public isModalOpen: boolean = false;
-  date1: Date | undefined;
+  public date1: Date | undefined;
+  @Output() requestSubmitted = new EventEmitter<void>();
 
   constructor(
     private employeeService: EmployeeService,
     private vacationRequestService: VacationRequestService,
     private fb: FormBuilder,
-    private http: HttpClient,
     private primengConfig: PrimeNGConfig
   ) {
     this.vacationRequestForm = this.fb.group({
@@ -87,15 +86,27 @@ export class VacationRequestFormComponent implements OnInit {
     if (this.vacationRequestForm.valid) {
       const formValues = this.vacationRequestForm.value;
 
-      const requestData : VacationRequest = {
+      const requestData: VacationRequest = {
         employeeId: formValues.employeeId,
-        vacationStart: new Date(formValues.vacationRange[0]),
-        vacationEnd: new Date(formValues.vacationRange[1]),
+        vacationStart: formValues.vacationRange[0].toISOString().split('T')[0],
+        vacationEnd: formValues.vacationRange[1].toISOString().split('T')[0],
         comment: formValues.comments,
-        submittedAt: new Date()
+        submittedAt: new Date().toISOString().split('.')[0]
       };
 
-      this.vacationRequestService.saveVacationRequest(requestData);
+      this.vacationRequestService.saveVacationRequest(requestData).subscribe({
+        next: (response) => {
+          console.log('Vacation request submitted:', response);
+          this.requestSubmitted.emit();
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error submitting vacation request:', error);
+        },
+        complete: () => {
+          console.log('Request completed');
+        }
+      });
 
     }
   }

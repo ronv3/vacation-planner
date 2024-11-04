@@ -8,11 +8,12 @@
     <th>Submitted at</th>
   </tr>
   <tr *ngFor="let vacation of vacations">
-    <td>{{vacation.employeeId}}</td>
+    <td>{{getEmployeeName(vacation.employeeId)}}</td>
     <td>{{vacation.vacationStart}}</td>
     <td>{{vacation.vacationEnd}}</td>
     <td>{{vacation.comment}}</td>
     <td>{{vacation.submittedAt}}</td>
   </tr>
 </table>
+<vacation-request-form (requestSubmitted)="refreshVacationRequests()"></vacation-request-form>
 

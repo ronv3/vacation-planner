@@ -25,11 +25,8 @@ public class VacationRequestController {
 
     @Post
     @Consumes(MediaType.APPLICATION_JSON)
-    public HttpResponse<?> createVacationRequest(@Body String json) {
+    public HttpResponse<?> createVacationRequest(@Body VacationRequest vacationRequest) {
         try {
-            // convert JSON to object
-            Gson gson = new Gson();
-            VacationRequest vacationRequest = gson.fromJson(json, VacationRequest.class);
             vacationRequestService.createVacationRequest(vacationRequest);
             return HttpResponse.status(HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {

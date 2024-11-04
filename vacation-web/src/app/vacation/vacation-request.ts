@@ -1,7 +1,7 @@
 export interface VacationRequest {
   employeeId: number;
-  vacationStart: Date;
-  vacationEnd: Date;
+  vacationStart: string;
+  vacationEnd: string;
   comment: string;
-  submittedAt: Date;
+  submittedAt: string;
 }

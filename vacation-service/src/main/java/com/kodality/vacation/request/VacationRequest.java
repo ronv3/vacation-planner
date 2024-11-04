@@ -1,5 +1,6 @@
 package com.kodality.vacation.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.micronaut.serde.annotation.Serdeable;
 
 import java.time.LocalDate;
@@ -15,8 +16,11 @@ import lombok.experimental.Accessors;
 public class VacationRequest {
 
     private long employeeId;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate vacationStart;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate vacationEnd;
     private String comment;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime submittedAt;
 }

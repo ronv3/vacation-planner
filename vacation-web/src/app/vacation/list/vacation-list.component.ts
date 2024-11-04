@@ -2,23 +2,47 @@ import { Component, OnInit } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { VacationRequest } from '../vacation-request';
 import { VacationRequestService } from '../vacation-request.service';
+import {VacationRequestFormComponent} from "../form/vacation-request-form.component";
+import {Employee} from "../employee";
+import {EmployeeService} from "../employee.service";
 
 @Component({
   standalone: true,
   selector: 'vacation-list',
-  imports: [NgFor],
+  imports: [NgFor, VacationRequestFormComponent],
   templateUrl: 'vacation-list.component.html',
   styleUrl: 'vacation-list.component.scss'
 })
 export class VacationListComponent implements OnInit {
 
   public vacations: VacationRequest[] = [];
+  public employees: Employee[] = [];
 
-  constructor(private vacationRequestService: VacationRequestService) {
+  constructor(
+    private vacationRequestService: VacationRequestService,
+    private employeeService: EmployeeService) {
   }
 
-  public ngOnInit(): void {
-    this.vacationRequestService.getVacationRequests().subscribe(response => this.vacations = response);
+  ngOnInit(): void {
+    this.refreshVacationRequests();
+    this.loadEmployees();
+  }
+
+  refreshVacationRequests(): void {
+    this.vacationRequestService.getVacationRequests().subscribe(
+      response => this.vacations = response
+    );
+  }
+
+  loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe(response => {
+      this.employees = response;
+    });
+  }
+
+  getEmployeeName(employeeId: number): string {
+    const employee = this.employees.find(emp => emp.id === employeeId);
+    return employee ? employee.employeeName : 'Unknown';
   }
 
 }
