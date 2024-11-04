@@ -44,12 +44,40 @@ public class VacationRequestRepository {
         );
     }
 
+    public void update(long id, VacationRequest vacationRequest) {
+        String sql = """
+                UPDATE vacation_request
+                SET employee_id = ?, vacation_start = ?, vacation_end = ?, comment = ?, submitted_at = ?
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(sql,
+                vacationRequest.getEmployeeId(),
+                vacationRequest.getVacationStart(),
+                vacationRequest.getVacationEnd(),
+                vacationRequest.getComment(),
+                vacationRequest.getSubmittedAt(),
+                id
+        );
+
+    }
+
+    public boolean existsById(Long id) {
+        String sql = "SELECT COUNT(*) FROM vacation_request WHERE id = ?";
+        // TODO: Fix deprecated method
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{id}, Integer.class);
+        return count != null && count > 0;
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM vacation_request WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     // Row mapper - convert data from a database to java object.
     private static class VacationRequestRowMapper implements RowMapper<VacationRequest> {
         @Override
         public VacationRequest mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new VacationRequest()
-                    .setId(rs.getLong("id"))
                     .setEmployeeId(rs.getLong("employee_id"))
                     .setVacationStart(rs.getObject("vacation_start", LocalDate.class))
                     .setVacationEnd(rs.getObject("vacation_end", LocalDate.class))

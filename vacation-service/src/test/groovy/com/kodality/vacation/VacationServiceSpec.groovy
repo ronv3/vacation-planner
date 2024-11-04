@@ -22,21 +22,25 @@ class VacationServiceSpec extends Specification {
     @Inject
     EmployeeService employeeService
 
+    //TODO: TESTS FOR RequestService GET function
+    //TODO: TESTS FOR RequestService PUT function
+    //TODO: TESTS FOR RequestService DELETE function
+
+    // TESTS FOR RequestService POST function
     @Unroll
     void "should submit vacation request successfully when employee has enough days and submits 14+ days in advance"() {
         given:
         def employee = new Employee()
-                .setId(1L)
-                .setEmployeeName("John Doe")
-                .setRemainingVacationDays(28)
+                .setId(2L)
+                .setEmployeeName("Meelis Kala")
+                .setRemainingVacationDays(26)
 
         def vacationRequest = new VacationRequest()
                 .setEmployeeId(employee.getId())
-                .setVacationStart(LocalDate.now().plusDays(15)) // 15 days in advance
-                .setVacationEnd(LocalDate.now().plusDays(18))   // 3-day vacation
-                .setComment("Annual leave")
+                .setVacationStart(LocalDate.now().plusDays(16)) // 15 days in advance
+                .setVacationEnd(LocalDate.now().plusDays(19))   // 3-day vacation
+                .setComment("Holidays")
 
-        employeeService.updateRemainingVacationDays(employee.getId(), employee.getRemainingVacationDays())
 
         when:
         vacationRequestService.createVacationRequest(vacationRequest)
@@ -50,15 +54,13 @@ class VacationServiceSpec extends Specification {
         given:
         def employee = new Employee()
                 .setId(2L)
-                .setEmployeeName("Jane Doe")
-                .setRemainingVacationDays(2) // Only 2 days left
+                .setEmployeeName("Meelis Kala")
+                .setRemainingVacationDays(4) // Only 2 days left
 
         def vacationRequest = new VacationRequest()
                 .setEmployeeId(employee.getId())
                 .setVacationStart(LocalDate.now().plusDays(15))
                 .setVacationEnd(LocalDate.now().plusDays(20)) // Requesting 5 days
-
-        employeeService.updateRemainingVacationDays(employee.getId(), employee.getRemainingVacationDays())
 
         when:
         vacationRequestService.createVacationRequest(vacationRequest)
@@ -72,16 +74,14 @@ class VacationServiceSpec extends Specification {
     void "should throw exception if vacation request is submitted less than 14 days in advance"() {
         given:
         def employee = new Employee()
-                .setId(3L)
-                .setEmployeeName("Alice Smith")
-                .setRemainingVacationDays(10) // Has enough days
+                .setId(2L)
+                .setEmployeeName("Meelis Kala")
+                .setRemainingVacationDays(26)
 
         def vacationRequest = new VacationRequest()
                 .setEmployeeId(employee.getId())
                 .setVacationStart(LocalDate.now().plusDays(10)) // Less than 14 days in advance
                 .setVacationEnd(LocalDate.now().plusDays(12))
-
-        employeeService.updateRemainingVacationDays(employee.getId(), employee.getRemainingVacationDays())
 
         when:
         vacationRequestService.createVacationRequest(vacationRequest)
@@ -90,6 +90,8 @@ class VacationServiceSpec extends Specification {
         def e = thrown(IllegalArgumentException)
         e.message == "Vacation request must be submitted at least 14 days in advance."
     }
+
+
 
 
 }
