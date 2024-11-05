@@ -1,5 +1,5 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import { EmployeeService } from '../employee.service';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {EmployeeService} from '../employee.service';
 import {
   AbstractControl,
   FormBuilder,
@@ -9,7 +9,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { Employee } from '../employee';
+import {Employee} from '../employee';
 import {DialogModule} from "primeng/dialog";
 import {DropdownModule} from "primeng/dropdown";
 import {CalendarModule} from "primeng/calendar";
@@ -29,7 +29,7 @@ export function dateRangeValidator(): ValidatorFn {
     }
 
     const endDate = value[1];
-    return endDate ? null : { invalidDateRange: true };
+    return endDate ? null : {invalidDateRange: true};
   };
 }
 
@@ -42,12 +42,15 @@ export function dateRangeValidator(): ValidatorFn {
   ],
   styleUrls: ['./vacation-request-form.component.scss']
 })
+
 export class VacationRequestFormComponent implements OnInit {
   public employees: Employee[] = [];
   public vacationRequestForm: FormGroup;
   public isModalOpen: boolean = false;
   public date1: Date | undefined;
+  @Input() existingRequest: VacationRequest | null = null;
   @Output() requestSubmitted = new EventEmitter<VacationRequest>();
+  @ViewChild('modal')modal!: ElementRef;
 
   constructor(
     private employeeService: EmployeeService,
@@ -65,6 +68,17 @@ export class VacationRequestFormComponent implements OnInit {
   ngOnInit(): void {
     this.loadEmployees();
     this.primengConfig.ripple = true;
+    if (this.existingRequest) {
+      this.populateForm(this.existingRequest);
+    }
+  }
+
+  populateForm(request: VacationRequest): void {
+    this.vacationRequestForm.patchValue({
+      employeeId: request.employeeId,
+      vacationRange: [new Date(request.vacationStart), new Date(request.vacationEnd)],
+      comments: request.comment
+    });
   }
 
   loadEmployees(): void {
@@ -75,36 +89,43 @@ export class VacationRequestFormComponent implements OnInit {
 
   openModal(): void {
     this.isModalOpen = true;
+    if (this.existingRequest) {
+      this.populateForm(this.existingRequest);
+    }
   }
 
   closeModal(): void {
     this.isModalOpen = false;
     this.vacationRequestForm.reset();
+    this.existingRequest = null;
   }
 
   onSubmit(): void {
     if (this.vacationRequestForm.valid) {
       const formValues = this.vacationRequestForm.value;
-
       const requestData: VacationRequest = {
+        id: this.existingRequest ? this.existingRequest.id : null,
         employeeId: formValues.employeeId,
-        vacationStart: formValues.vacationRange[0].toISOString().split('T')[0],
-        vacationEnd: formValues.vacationRange[1].toISOString().split('T')[0],
+        vacationStart: new Date(formValues.vacationRange[0]).toLocaleDateString('en-CA'),
+        vacationEnd: new Date(formValues.vacationRange[1]).toLocaleDateString('en-CA'),
         comment: formValues.comments,
         submittedAt: new Date().toISOString().split('.')[0]
       };
 
-      this.vacationRequestService.saveVacationRequest(requestData).subscribe({
-        next: (createdRequest: VacationRequest) => {
-          console.log('Vacation request submitted:', createdRequest);
-          this.requestSubmitted.emit(createdRequest); // Emit the request with ID
+
+      const submitObservable = requestData.id
+          ? this.vacationRequestService.updateVacationRequest(requestData)
+          : this.vacationRequestService.saveVacationRequest(requestData);
+
+      submitObservable.subscribe({
+        next: updatedOrCreatedRequest => {
+          this.requestSubmitted.emit(updatedOrCreatedRequest);
           this.closeModal();
+          this.vacationRequestForm.reset();
         },
-        error: (error) => {
-          console.error('Error submitting vacation request:', error);
-        },
-        complete: () => {
-          console.log('Request completed');
+        error: (errorResponse) => {
+          console.error('Unexpected error submitting vacation request:', errorResponse);
+          this.vacationRequestForm.setErrors(errorResponse.error);
         }
       });
     }

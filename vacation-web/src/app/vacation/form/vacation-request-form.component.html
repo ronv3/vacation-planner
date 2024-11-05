@@ -1,6 +1,6 @@
 <p-button type="button" label="Create New Vacation Request" (click)="openModal()"></p-button>
 
-<p-dialog [(visible)]="isModalOpen" [modal]="true" header="Vacation Request" [style]="{ width: '30rem' }">
+<p-dialog #modal class="modal" [(visible)]="isModalOpen" [modal]="true" header="Vacation Request" [style]="{ width: '30rem' }">
   <form [formGroup]="vacationRequestForm" (ngSubmit)="onSubmit()">
 
     <div class="p-field">
@@ -48,6 +48,10 @@
         Maximum length is 200 characters.
       </div>
     </div>
+
+      <div *ngIf="vacationRequestForm?.errors" class="error-message">
+          {{ vacationRequestForm.errors }}
+      </div>
 
     <div class="p-dialog-footer">
       <button pButton type="button" label="Cancel" (click)="closeModal()"></button>

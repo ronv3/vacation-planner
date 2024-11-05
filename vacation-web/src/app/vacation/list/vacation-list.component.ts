@@ -1,22 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { NgFor } from '@angular/common';
 import { VacationRequest } from '../vacation-request';
 import { VacationRequestService } from '../vacation-request.service';
 import {VacationRequestFormComponent} from "../form/vacation-request-form.component";
 import {Employee} from "../employee";
 import {EmployeeService} from "../employee.service";
+import {ButtonDirective} from "primeng/button";
 
 @Component({
   standalone: true,
   selector: 'vacation-list',
-  imports: [NgFor, VacationRequestFormComponent],
+  imports: [NgFor, VacationRequestFormComponent, ButtonDirective],
   templateUrl: 'vacation-list.component.html',
   styleUrl: 'vacation-list.component.scss'
 })
 export class VacationListComponent implements OnInit {
+  @ViewChild(VacationRequestFormComponent) vacationRequestFromComponent!: VacationRequestFormComponent;
 
   public vacations: VacationRequest[] = [];
   public employees: Employee[] = [];
+  public selectedVacation: VacationRequest | null = null;
 
   constructor(
     private vacationRequestService: VacationRequestService,
@@ -41,8 +44,7 @@ export class VacationListComponent implements OnInit {
   }
 
   refreshVacationRequests(createdRequest: VacationRequest): void {
-    this.vacations.push(createdRequest);
-    console.log(this.vacations)
+    this.loadVacationRequests()
   }
 
   getEmployeeName(employeeId: number): string {
@@ -50,11 +52,11 @@ export class VacationListComponent implements OnInit {
     return employee ? employee.employeeName : 'Unknown';
   }
 
-  editVacation(vacation: VacationRequest) {
-    // TODO: Open the vacation request form with existing data
-    // TODO: Logic to pre-fill the form with `vacation` data goes here
-    console.log('Editing vacation request:', vacation);
-    // TODO: Potentially pass data to the vacation-request-form component for editing
+  editVacation(vacation: VacationRequest): void {
+    this.selectedVacation = vacation;
+    this.vacationRequestFromComponent.existingRequest = vacation;
+    this.vacationRequestFromComponent.openModal();
+    console.log('Editing vacation request:', vacation)
   }
 
   deleteVacation(vacationId: number | undefined | null) {

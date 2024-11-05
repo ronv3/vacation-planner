@@ -1,6 +1,5 @@
 <vacation-request-form (requestSubmitted)="refreshVacationRequests($event)"></vacation-request-form>
 
-
 <h3>Submitted vacation requests</h3>
 <table class="vacation-list">
   <tr>
@@ -18,8 +17,8 @@
     <td>{{vacation.comment}}</td>
     <td>{{vacation.submittedAt}}</td>
     <td>
-      <button pButton type="button" label="Edit" icon="pi pi-pencil" (click)="editVacation(vacation)"></button>
       <button pButton type="button" label="Delete" icon="pi pi-trash" (click)="deleteVacation(vacation.id)"></button>
+      <button pButton type="button" label="Edit" icon="pi pi-pencil" (click)="editVacation(vacation)"></button>
     </td>
   </tr>
 </table>

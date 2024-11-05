@@ -49,7 +49,7 @@ public class VacationRequestRepository {
         );
     }
 
-    public void update(long id, VacationRequest vacationRequest) {
+    public void updateVacationRequest(long id, VacationRequest vacationRequest) {
         String sql = """
                 UPDATE vacation_request
                 SET employee_id = ?, vacation_start = ?, vacation_end = ?, comment = ?, submitted_at = ?
@@ -63,7 +63,15 @@ public class VacationRequestRepository {
                 vacationRequest.getSubmittedAt(),
                 id
         );
+    }
 
+    public VacationRequest getVacationRequestById(long id) {
+        String sql = """
+                SELECT id, employee_id, vacation_start, vacation_end, submitted_at, comment
+                FROM vacation_request
+                WHERE id = ?
+            """;
+        return jdbcTemplate.queryForObject(sql, new VacationRequestRepository.VacationRequestRowMapper(), id);
     }
 
     public boolean existsById(Long id) {

@@ -21,4 +21,10 @@ export class VacationRequestService {
   deleteVacationRequest(id: number): Observable<void> {
     return this.http.delete<void>(`/api/vacation-requests/${id}`);
   }
+
+  public updateVacationRequest(request: VacationRequest): Observable<VacationRequest> {
+    return this.http.put<VacationRequest>(`/api/vacation-requests/${request.id}`, request, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }
