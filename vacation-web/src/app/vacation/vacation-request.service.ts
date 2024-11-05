@@ -18,4 +18,7 @@ export class VacationRequestService {
     })
   }
 
+  deleteVacationRequest(id: number): Observable<void> {
+    return this.http.delete<void>(`/api/vacation-requests/${id}`);
+  }
 }

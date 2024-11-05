@@ -24,14 +24,14 @@ export class VacationListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.refreshVacationRequests();
+    this.loadVacationRequests();
     this.loadEmployees();
   }
 
-  refreshVacationRequests(): void {
-    this.vacationRequestService.getVacationRequests().subscribe(
-      response => this.vacations = response
-    );
+  private loadVacationRequests() : void {
+    this.vacationRequestService.getVacationRequests().subscribe(response => {
+      this.vacations = response
+    });
   }
 
   loadEmployees(): void {
@@ -40,9 +40,33 @@ export class VacationListComponent implements OnInit {
     });
   }
 
+  refreshVacationRequests(createdRequest: VacationRequest): void {
+    this.vacations.push(createdRequest);
+    console.log(this.vacations)
+  }
+
   getEmployeeName(employeeId: number): string {
     const employee = this.employees.find(emp => emp.id === employeeId);
     return employee ? employee.employeeName : 'Unknown';
   }
 
+  editVacation(vacation: VacationRequest) {
+    // TODO: Open the vacation request form with existing data
+    // TODO: Logic to pre-fill the form with `vacation` data goes here
+    console.log('Editing vacation request:', vacation);
+    // TODO: Potentially pass data to the vacation-request-form component for editing
+  }
+
+  deleteVacation(vacationId: number | undefined | null) {
+    if (vacationId != null) {
+      if (confirm('Are you sure you want to delete this vacation request?')) {
+        this.vacationRequestService.deleteVacationRequest(vacationId).subscribe(() => {
+          console.log('Vacation request deleted successfully');
+          this.loadVacationRequests();
+        });
+    } else {
+      console.warn("Vacation ID is undefined or null. Cannot delete.");
+    }
+    }
+  }
 }

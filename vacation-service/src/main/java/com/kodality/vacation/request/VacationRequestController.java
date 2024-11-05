@@ -1,11 +1,12 @@
 package com.kodality.vacation.request;
 
-import com.google.gson.Gson;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller("/vacation-requests")
@@ -27,8 +28,8 @@ public class VacationRequestController {
     @Consumes(MediaType.APPLICATION_JSON)
     public HttpResponse<?> createVacationRequest(@Body VacationRequest vacationRequest) {
         try {
-            vacationRequestService.createVacationRequest(vacationRequest);
-            return HttpResponse.status(HttpStatus.CREATED);
+            VacationRequest createdRequest = vacationRequestService.createVacationRequest(vacationRequest);
+            return HttpResponse.status(HttpStatus.CREATED).body(createdRequest);
         } catch (IllegalArgumentException e) {
             return HttpResponse.badRequest(e.getMessage());
         } catch (Exception e) {
@@ -38,11 +39,8 @@ public class VacationRequestController {
 
     @Put("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public HttpResponse<?> updateVacationRequest(@PathVariable long id, @Body String json) {
+    public HttpResponse<?> updateVacationRequest(@PathVariable long id, @Body VacationRequest vacationRequest) {
         try {
-            // convert JSON to object
-            Gson gson = new Gson();
-            VacationRequest vacationRequest = gson.fromJson(json, VacationRequest.class);
             vacationRequestService.updateVacationRequest(id, vacationRequest);
             return HttpResponse.status(HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
@@ -57,5 +55,17 @@ public class VacationRequestController {
     public void deleteVacationRequest(@PathVariable Long id) {
         vacationRequestService.deleteVacationRequest(id);
     }
+
+    /*@Get("/FilterVacations")
+    public HttpResponse<List<VacationRequest>> updateVacationRequest(@RequestAttribute String name, @RequestAttribute LocalDateTime startDate, @RequestAttribute LocalDateTime endDate) {
+        List<VacationRequest> filteredVacationRequests = vacationRequestService.getFilteredVacationRequests(name, startDate, endDate);
+        if (filteredVacationRequests.isEmpty()) {
+            return HttpResponse.notFound(filteredVacationRequests);
+        }
+
+        return HttpResponse.ok(filteredVacationRequests);
+    }
+
+     */
 
 }

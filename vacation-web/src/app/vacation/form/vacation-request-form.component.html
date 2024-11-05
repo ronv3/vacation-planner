@@ -1,4 +1,4 @@
-<p-button type="button" label="Request Vacation" (click)="openModal()"></p-button>
+<p-button type="button" label="Create New Vacation Request" (click)="openModal()"></p-button>
 
 <p-dialog [(visible)]="isModalOpen" [modal]="true" header="Vacation Request" [style]="{ width: '30rem' }">
   <form [formGroup]="vacationRequestForm" (ngSubmit)="onSubmit()">

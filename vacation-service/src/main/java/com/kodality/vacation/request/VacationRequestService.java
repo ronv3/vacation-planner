@@ -26,7 +26,7 @@ public class VacationRequestService {
         return vacationRequestRepository.getVacationRequests();
     }
 
-    public void createVacationRequest(VacationRequest vacationRequest) {
+    public VacationRequest createVacationRequest(VacationRequest vacationRequest) {
         Employee employee = employeeService.getEmployeeById(vacationRequest.getEmployeeId());
         if (employee == null) {
             throw new IllegalArgumentException("Employee not found.");
@@ -42,8 +42,14 @@ public class VacationRequestService {
         }
 
         vacationRequest.setSubmittedAt(LocalDateTime.now());
-        vacationRequestRepository.create(vacationRequest);
+
+        // Creating a new vacation request in the db, returning ID
+        long id = vacationRequestRepository.create(vacationRequest);
         employeeService.updateRemainingVacationDays(employee.getId(), employee.getRemainingVacationDays() - (int) requestedDays);
+        vacationRequest.setId(id);
+
+        return vacationRequest;
+
     }
 
     public void updateVacationRequest(long id, VacationRequest vacationRequest) {
@@ -70,5 +76,10 @@ public class VacationRequestService {
             throw new IllegalArgumentException("Vacation request not found.");
         }
         vacationRequestRepository.deleteById(id);
+    }
+
+    public List<VacationRequest> getFilteredVacationRequests(String name, LocalDateTime startDate, LocalDateTime endDate) {
+        return vacationRequestRepository.getFiltered(name, startDate, endDate);
+
     }
 }

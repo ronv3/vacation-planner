@@ -1,5 +1,7 @@
 package com.kodality.vacation.request;
 
+import com.kodality.vacation.employee.Employee;
+import com.kodality.vacation.employee.EmployeeRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Singleton
@@ -23,19 +26,21 @@ public class VacationRequestRepository {
     // SQL query - find all vacation requests.
     public List<VacationRequest> getVacationRequests() {
         String sql = """
-                    SELECT vr.id, vr.employee_id, vr.vacation_start, vr.vacation_end, vr.submitted_at, vr.comment 
-                    FROM vacation_request vr
+                    SELECT id, employee_id, vacation_start, vacation_end, submitted_at, comment
+                    FROM vacation_request
                 """;
-        return jdbcTemplate.query(sql, new VacationRequestRowMapper());
+        return jdbcTemplate.query(sql, new VacationRequestRepository.VacationRequestRowMapper());
     }
 
     // SQL query - create a new vacation request.
-    public void create(VacationRequest vacationRequest) {
+    public Long create(VacationRequest vacationRequest) {
         String sql = """
-                    INSERT INTO vacation_request (employee_id, vacation_start, vacation_end, comment, submitted_at)
-                    VALUES (?, ?, ?, ?, ?)
-                """;
-        jdbcTemplate.update(sql,
+                INSERT INTO vacation_request (employee_id, vacation_start, vacation_end, comment, submitted_at)
+                VALUES (?, ?, ?, ?, ?)
+                RETURNING id;
+            """;
+        return jdbcTemplate.queryForObject(sql,
+                Long.class,
                 vacationRequest.getEmployeeId(),
                 vacationRequest.getVacationStart(),
                 vacationRequest.getVacationEnd(),
@@ -73,11 +78,28 @@ public class VacationRequestRepository {
         jdbcTemplate.update(sql, id);
     }
 
+    // TODO: To finish.
+    public List<VacationRequest> getFiltered(String name, LocalDateTime startDate, LocalDateTime endDate) {
+        StringBuilder sql = new StringBuilder("""
+                select  vr.id, vr.employee_id, vr.vacation_start, vr.vacation_end, vr.submitted_at, vr.comment 
+                from
+                vacation_request vr Join employees e ON e.id = vr.employee_id
+                where 1=1;
+                """);
+
+        if (name != null && !name.isEmpty()) {
+            sql.append(" and e.name = ");
+        }
+        return jdbcTemplate.query(sql.toString(), new VacationRequestRepository.VacationRequestRowMapper());
+
+    }
+
     // Row mapper - convert data from a database to java object.
     private static class VacationRequestRowMapper implements RowMapper<VacationRequest> {
         @Override
         public VacationRequest mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new VacationRequest()
+                    .setId(rs.getLong("id"))
                     .setEmployeeId(rs.getLong("employee_id"))
                     .setVacationStart(rs.getObject("vacation_start", LocalDate.class))
                     .setVacationEnd(rs.getObject("vacation_end", LocalDate.class))

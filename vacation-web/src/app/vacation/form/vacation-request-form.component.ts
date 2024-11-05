@@ -47,7 +47,7 @@ export class VacationRequestFormComponent implements OnInit {
   public vacationRequestForm: FormGroup;
   public isModalOpen: boolean = false;
   public date1: Date | undefined;
-  @Output() requestSubmitted = new EventEmitter<void>();
+  @Output() requestSubmitted = new EventEmitter<VacationRequest>();
 
   constructor(
     private employeeService: EmployeeService,
@@ -95,9 +95,9 @@ export class VacationRequestFormComponent implements OnInit {
       };
 
       this.vacationRequestService.saveVacationRequest(requestData).subscribe({
-        next: (response) => {
-          console.log('Vacation request submitted:', response);
-          this.requestSubmitted.emit();
+        next: (createdRequest: VacationRequest) => {
+          console.log('Vacation request submitted:', createdRequest);
+          this.requestSubmitted.emit(createdRequest); // Emit the request with ID
           this.closeModal();
         },
         error: (error) => {
@@ -107,7 +107,6 @@ export class VacationRequestFormComponent implements OnInit {
           console.log('Request completed');
         }
       });
-
     }
   }
 }

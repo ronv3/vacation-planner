@@ -15,6 +15,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class VacationRequest {
 
+    private long id;
     private long employeeId;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate vacationStart;
