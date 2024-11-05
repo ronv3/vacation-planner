@@ -1,6 +1,7 @@
 package com.kodality.vacation.request;
 
 import com.kodality.vacation.employee.Employee;
+import com.kodality.vacation.employee.EmployeeRepository;
 import com.kodality.vacation.employee.EmployeeService;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
@@ -16,10 +17,12 @@ public class VacationRequestService {
 
     private final VacationRequestRepository vacationRequestRepository;
     private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
 
-    public VacationRequestService(VacationRequestRepository vacationRequestRepository, EmployeeService employeeService) {
+    public VacationRequestService(VacationRequestRepository vacationRequestRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
         this.vacationRequestRepository = vacationRequestRepository;
         this.employeeService = employeeService;
+        this.employeeRepository = employeeRepository;
     }
 
     public List<VacationRequest> getVacationRequests() {
@@ -58,6 +61,10 @@ public class VacationRequestService {
             throw new IllegalArgumentException("Employee not found.");
         }
 
+        //Ca
+        VacationRequest oldVacationRequest = vacationRequestRepository.getVacationRequestById(id);
+        int oldDuration = (int) ChronoUnit.DAYS.between(oldVacationRequest.getVacationStart(), oldVacationRequest.getVacationEnd()) + 1;
+
         // Validating input
         long requestedDays = ChronoUnit.DAYS.between(vacationRequest.getVacationStart(), vacationRequest.getVacationEnd()) + 1;
         if (requestedDays > employee.getRemainingVacationDays()) {
@@ -68,13 +75,15 @@ public class VacationRequestService {
         }
 
         vacationRequest.setSubmittedAt(LocalDateTime.now());
-        vacationRequestRepository.update(id, vacationRequest);
+        vacationRequestRepository.updateVacationRequest(id, vacationRequest);
+        employeeRepository.updateRemainingVacationDays(id, oldDuration);
     }
 
     public void deleteVacationRequest(Long id) {
         if (!vacationRequestRepository.existsById(id)) {
             throw new IllegalArgumentException("Vacation request not found.");
         }
+
         vacationRequestRepository.deleteById(id);
     }
 
