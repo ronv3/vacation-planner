@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { NgFor } from '@angular/common';
 import { VacationRequest } from '../vacation-request';
 import { VacationRequestService } from '../vacation-request.service';
@@ -14,9 +14,11 @@ import {EmployeeService} from "../employee.service";
   styleUrl: 'vacation-list.component.scss'
 })
 export class VacationListComponent implements OnInit {
+  @ViewChild(VacationRequestFormComponent) vacationRequestFromComponent!: VacationRequestFormComponent;
 
   public vacations: VacationRequest[] = [];
   public employees: Employee[] = [];
+  public selectedVacation: VacationRequest | null = null;
 
   constructor(
     private vacationRequestService: VacationRequestService,
@@ -50,11 +52,23 @@ export class VacationListComponent implements OnInit {
     return employee ? employee.employeeName : 'Unknown';
   }
 
-  editVacation(vacation: VacationRequest) {
-    // TODO: Open the vacation request form with existing data
-    // TODO: Logic to pre-fill the form with `vacation` data goes here
-    console.log('Editing vacation request:', vacation);
-    // TODO: Potentially pass data to the vacation-request-form component for editing
+  editVacation(vacation: VacationRequest): void {
+    this.selectedVacation = vacation;
+    this.vacationRequestFromComponent.existingRequest = vacation;
+    this.vacationRequestFromComponent.openModal();
+    console.log('Editing vacation request:', vacation)
+  }
+
+
+  onRequestSubmitted(updatedRequest: VacationRequest): void {
+    const index = this.vacations.findIndex(v => v.id === updatedRequest.id);
+    if (index >= 0) {
+      this.vacations[index] = updatedRequest;  // Update the list with the edited request
+    } else {
+      this.vacations.push(updatedRequest);  // Add if it's a new request
+    }
+    this.selectedVacation = null;  // Reset after submit
+    this.vacationRequestFromComponent.closeModal();
   }
 
   deleteVacation(vacationId: number | undefined | null) {
