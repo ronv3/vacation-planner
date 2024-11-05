@@ -1,15 +1,16 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { NgFor } from '@angular/common';
 import { VacationRequest } from '../vacation-request';
 import { VacationRequestService } from '../vacation-request.service';
 import {VacationRequestFormComponent} from "../form/vacation-request-form.component";
 import {Employee} from "../employee";
 import {EmployeeService} from "../employee.service";
+import {ButtonDirective} from "primeng/button";
 
 @Component({
   standalone: true,
   selector: 'vacation-list',
-  imports: [NgFor, VacationRequestFormComponent],
+  imports: [NgFor, VacationRequestFormComponent, ButtonDirective],
   templateUrl: 'vacation-list.component.html',
   styleUrl: 'vacation-list.component.scss'
 })
@@ -43,8 +44,7 @@ export class VacationListComponent implements OnInit {
   }
 
   refreshVacationRequests(createdRequest: VacationRequest): void {
-    this.vacations.push(createdRequest);
-    console.log(this.vacations)
+    this.loadVacationRequests()
   }
 
   getEmployeeName(employeeId: number): string {
@@ -63,11 +63,11 @@ export class VacationListComponent implements OnInit {
   onRequestSubmitted(updatedRequest: VacationRequest): void {
     const index = this.vacations.findIndex(v => v.id === updatedRequest.id);
     if (index >= 0) {
-      this.vacations[index] = updatedRequest;  // Update the list with the edited request
+      this.vacations[index] = updatedRequest;
     } else {
-      this.vacations.push(updatedRequest);  // Add if it's a new request
+      this.vacations.push(updatedRequest);
     }
-    this.selectedVacation = null;  // Reset after submit
+    this.selectedVacation = null;
     this.vacationRequestFromComponent.closeModal();
   }
 

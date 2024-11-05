@@ -112,12 +112,13 @@ export class VacationRequestFormComponent implements OnInit {
         submittedAt: new Date().toISOString().split('.')[0]
       };
 
-      if (this.existingRequest) {
+      if (requestData.id != null) {
         this.vacationRequestService.updateVacationRequest(requestData).subscribe({
           next: updatedRequest => {
             console.log('Vacation request updated:', updatedRequest);
-            this.requestSubmitted.emit(updatedRequest);
+            this.requestSubmitted.emit(requestData);
             this.closeModal();
+            this.vacationRequestForm.reset();
           },
           error: (error) => {
             console.error('Error submitting vacation request:', error);
@@ -131,8 +132,9 @@ export class VacationRequestFormComponent implements OnInit {
         this.vacationRequestService.saveVacationRequest(requestData).subscribe({
           next: (createdRequest: VacationRequest) => {
             console.log('Vacation request submitted:', createdRequest);
-            this.requestSubmitted.emit(createdRequest); // Emit the request with ID
+            this.requestSubmitted.emit(requestData);
             this.closeModal();
+            this.vacationRequestForm.reset();
           },
           error: (error) => {
             console.error('Error submitting vacation request:', error);
