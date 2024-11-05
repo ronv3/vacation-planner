@@ -59,18 +59,6 @@ export class VacationListComponent implements OnInit {
     console.log('Editing vacation request:', vacation)
   }
 
-
-  onRequestSubmitted(updatedRequest: VacationRequest): void {
-    const index = this.vacations.findIndex(v => v.id === updatedRequest.id);
-    if (index >= 0) {
-      this.vacations[index] = updatedRequest;
-    } else {
-      this.vacations.push(updatedRequest);
-    }
-    this.selectedVacation = null;
-    this.vacationRequestFromComponent.closeModal();
-  }
-
   deleteVacation(vacationId: number | undefined | null) {
     if (vacationId != null) {
       if (confirm('Are you sure you want to delete this vacation request?')) {

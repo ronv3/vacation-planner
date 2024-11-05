@@ -49,6 +49,10 @@
       </div>
     </div>
 
+      <div *ngIf="vacationRequestForm?.errors" class="error-message">
+          {{ vacationRequestForm.errors }}
+      </div>
+
     <div class="p-dialog-footer">
       <button pButton type="button" label="Cancel" (click)="closeModal()"></button>
       <button pButton type="submit" label="Submit Request" [disabled]="vacationRequestForm.invalid"></button>

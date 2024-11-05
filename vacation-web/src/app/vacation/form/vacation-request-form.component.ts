@@ -68,7 +68,7 @@ export class VacationRequestFormComponent implements OnInit {
   ngOnInit(): void {
     this.loadEmployees();
     this.primengConfig.ripple = true;
-    if (this.existingRequest) {  // Populate form if there's an existing request
+    if (this.existingRequest) {
       this.populateForm(this.existingRequest);
     }
   }
@@ -104,46 +104,30 @@ export class VacationRequestFormComponent implements OnInit {
     if (this.vacationRequestForm.valid) {
       const formValues = this.vacationRequestForm.value;
       const requestData: VacationRequest = {
-        id: this.existingRequest ? this.existingRequest.id : null, // Use existing ID for edit
+        id: this.existingRequest ? this.existingRequest.id : null,
         employeeId: formValues.employeeId,
-        vacationStart: formValues.vacationRange[0].toISOString().split('T')[0],
-        vacationEnd: formValues.vacationRange[1].toISOString().split('T')[0],
+        vacationStart: new Date(formValues.vacationRange[0]).toLocaleDateString('en-CA'),
+        vacationEnd: new Date(formValues.vacationRange[1]).toLocaleDateString('en-CA'),
         comment: formValues.comments,
         submittedAt: new Date().toISOString().split('.')[0]
       };
 
-      if (requestData.id != null) {
-        this.vacationRequestService.updateVacationRequest(requestData).subscribe({
-          next: updatedRequest => {
-            console.log('Vacation request updated:', updatedRequest);
-            this.requestSubmitted.emit(requestData);
-            this.closeModal();
-            this.vacationRequestForm.reset();
-          },
-          error: (error) => {
-            console.error('Error submitting vacation request:', error);
-          },
-          complete: () => {
-            console.log('Request completed');
-          }
-        });
 
-      } else {
-        this.vacationRequestService.saveVacationRequest(requestData).subscribe({
-          next: (createdRequest: VacationRequest) => {
-            console.log('Vacation request submitted:', createdRequest);
-            this.requestSubmitted.emit(requestData);
-            this.closeModal();
-            this.vacationRequestForm.reset();
-          },
-          error: (error) => {
-            console.error('Error submitting vacation request:', error);
-          },
-          complete: () => {
-            console.log('Request completed');
-          }
-        });
-      }
+      const submitObservable = requestData.id
+          ? this.vacationRequestService.updateVacationRequest(requestData)
+          : this.vacationRequestService.saveVacationRequest(requestData);
+
+      submitObservable.subscribe({
+        next: updatedOrCreatedRequest => {
+          this.requestSubmitted.emit(updatedOrCreatedRequest);
+          this.closeModal();
+          this.vacationRequestForm.reset();
+        },
+        error: (errorResponse) => {
+          console.error('Unexpected error submitting vacation request:', errorResponse);
+          this.vacationRequestForm.setErrors(errorResponse.error);
+        }
+      });
     }
   }
 }
