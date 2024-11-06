@@ -6,8 +6,11 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller("/vacation-requests")
 public class VacationRequestController {
@@ -52,20 +55,33 @@ public class VacationRequestController {
 
     @Delete("/{id}")
     @Status(HttpStatus.NO_CONTENT) // Responds with 204 No Content
-    public void deleteVacationRequest(@PathVariable Long id) {
-        vacationRequestService.deleteVacationRequest(id);
+    public HttpResponse<?> deleteVacationRequest(@PathVariable Long id) {
+        try {
+            vacationRequestService.deleteVacationRequest(id);
+            return HttpResponse.ok();
+        } catch (IllegalArgumentException e) {
+            return HttpResponse.badRequest(e.getMessage());
+        }
     }
 
-    /*@Get("/FilterVacations")
-    public HttpResponse<List<VacationRequest>> updateVacationRequest(@RequestAttribute String name, @RequestAttribute LocalDateTime startDate, @RequestAttribute LocalDateTime endDate) {
-        List<VacationRequest> filteredVacationRequests = vacationRequestService.getFilteredVacationRequests(name, startDate, endDate);
+
+    @Get("/filter")
+    public HttpResponse<List<VacationRequest>> filterVacationRequests(
+            @QueryValue("employeeId") Optional<Long> employeeId,
+            @QueryValue("startDate") Optional<LocalDate> startDate,
+            @QueryValue("endDate") Optional<LocalDate> endDate) {
+        List<VacationRequest> filteredVacationRequests = vacationRequestService.getFilteredVacationRequests(
+                employeeId.orElse(null), startDate.orElse(null), endDate.orElse(null)
+        );
+        Logger logger = Logger.getLogger(getClass().getName());
+        logger.log(Level.INFO, employeeId.toString());
+        logger.log(Level.INFO, startDate.toString());
+        logger.log(Level.INFO, endDate.toString());
         if (filteredVacationRequests.isEmpty()) {
             return HttpResponse.notFound(filteredVacationRequests);
         }
-
         return HttpResponse.ok(filteredVacationRequests);
     }
 
-     */
 
 }

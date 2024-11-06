@@ -6,21 +6,21 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="11" author="ron">
+    <changeSet id="54" author="ron">
         <insert tableName="employees">
             <column name="id" value="0"/>
-            <column name="employee_name" value="Kadri Täht"/>
-            <column name="remaining_vacation_days" value="12"/>
+            <column name="employee_name" value="Markus Villig"/>
+            <column name="remaining_vacation_days" value="19"/>
         </insert>
         <insert tableName="employees">
             <column name="id" value="1"/>
-            <column name="employee_name" value="Peeter Kuningas"/>
-            <column name="remaining_vacation_days" value="8"/>
+            <column name="employee_name" value="Peeter Volkonski"/>
+            <column name="remaining_vacation_days" value="21"/>
         </insert>
         <insert tableName="employees">
             <column name="id" value="2"/>
-            <column name="employee_name" value="Meelis Kala"/>
-            <column name="remaining_vacation_days" value="26"/>
+            <column name="employee_name" value="Laomees Lagunov"/>
+            <column name="remaining_vacation_days" value="28"/>
         </insert>
     </changeSet>
 

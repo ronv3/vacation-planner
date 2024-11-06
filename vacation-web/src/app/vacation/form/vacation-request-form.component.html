@@ -6,12 +6,14 @@
     <div class="p-field">
       <label>Employee</label>
       <p-dropdown
+
         [options]="employees"
         [style]="{ width: '100%' }"
         optionLabel="employeeName"
         optionValue="id"
         formControlName="employeeId"
-        placeholder="Select an Employee">
+        placeholder="Select an Employee"
+        [disabled]="existingRequest != null">
       </p-dropdown>
       <div *ngIf="vacationRequestForm.get('employeeId')?.invalid && vacationRequestForm.get('employeeId')?.touched" class="error-message">
         Employee selection is required.

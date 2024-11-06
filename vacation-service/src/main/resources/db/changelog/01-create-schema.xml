@@ -6,7 +6,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="5" author="ron">
+    <changeSet id="50" author="username">
+        <sql>DROP TABLE IF EXISTS vacation_request;</sql>
+        <sql>DROP TABLE IF EXISTS employees;</sql>
+    </changeSet>
+
+    <changeSet id="51" author="ron">
         <createTable tableName="vacation_request">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

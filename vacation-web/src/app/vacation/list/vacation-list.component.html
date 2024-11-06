@@ -1,6 +1,34 @@
 <vacation-request-form (requestSubmitted)="refreshVacationRequests($event)"></vacation-request-form>
 
 <h3>Submitted vacation requests</h3>
+
+<div class="filter-row">
+  <p-dropdown
+    [options]="employees"
+    [(ngModel)]="filteredEmployeeId"
+    [showClear]="true"
+    optionLabel="employeeName"
+    optionValue="id"
+    placeholder="Select an Employee">
+  </p-dropdown>
+
+  <p-calendar
+    [(ngModel)]= "startDatePicker"
+    dat="dd.mm.yy"
+    placeholder="Start Date"
+    [showButtonBar]="true">
+  </p-calendar>
+
+  <p-calendar
+    [(ngModel)]= "endDatePicker"
+    dateFormat="dd.mm.yy"
+    placeholder="End Date"
+    [showButtonBar]="true">
+  </p-calendar>
+  <button pButton type="button" label="Filter" (click)="loadVacationRequests(filteredEmployeeId || null, startDatePicker || null,endDatePicker || null)"></button>
+  <button pButton type="button" label="Clear Filter" (click)="clearFilters()"></button>
+</div>
+
 <table class="vacation-list">
   <tr>
     <th>Employee</th>

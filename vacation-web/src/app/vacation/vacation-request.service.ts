@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { VacationRequest } from './vacation-request';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class VacationRequestService {
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public getVacationRequests(): Observable<VacationRequest[]> {
     return this.http.get<VacationRequest[]>('/api/vacation-requests');
@@ -14,7 +15,7 @@ export class VacationRequestService {
 
   public saveVacationRequest(request: VacationRequest): Observable<VacationRequest> {
     return this.http.post<VacationRequest>('/api/vacation-requests', request, {
-      headers: { 'Content-Type': 'application/json' }
+      headers: {'Content-Type': 'application/json'}
     })
   }
 
@@ -24,7 +25,31 @@ export class VacationRequestService {
 
   public updateVacationRequest(request: VacationRequest): Observable<VacationRequest> {
     return this.http.put<VacationRequest>(`/api/vacation-requests/${request.id}`, request, {
-      headers: { 'Content-Type': 'application/json' }
+      headers: {'Content-Type': 'application/json'}
     });
   }
+
+  public filterVacationRequests(
+    employeeId: number | null,
+    startDate: Date | null,
+    endDate: Date | null
+  ): Observable<VacationRequest[]> {
+    let params = new HttpParams();
+    if (employeeId !== null) {
+      params = params.set('employeeId', employeeId);
+      console.log(params)
+    }
+    if (startDate !== null) {
+      params = params.set('startDate', startDate.toLocaleDateString('en-CA'));
+      console.log(params)
+    }
+    if (endDate !== null) {
+      params = params.set('endDate', endDate.toLocaleDateString('en-CA'));
+      console.log(params);
+    }
+    return this.http.get<VacationRequest[]>('/api/vacation-requests/filter', { params });
+  }
+
+
 }
+

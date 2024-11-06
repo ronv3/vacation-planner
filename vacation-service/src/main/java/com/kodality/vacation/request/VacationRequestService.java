@@ -17,12 +17,10 @@ public class VacationRequestService {
 
     private final VacationRequestRepository vacationRequestRepository;
     private final EmployeeService employeeService;
-    private final EmployeeRepository employeeRepository;
 
-    public VacationRequestService(VacationRequestRepository vacationRequestRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
+    public VacationRequestService(VacationRequestRepository vacationRequestRepository, EmployeeService employeeService) {
         this.vacationRequestRepository = vacationRequestRepository;
         this.employeeService = employeeService;
-        this.employeeRepository = employeeRepository;
     }
 
     public List<VacationRequest> getVacationRequests() {
@@ -31,63 +29,111 @@ public class VacationRequestService {
 
     public VacationRequest createVacationRequest(VacationRequest vacationRequest) {
         Employee employee = employeeService.getEmployeeById(vacationRequest.getEmployeeId());
-        if (employee == null) {
-            throw new IllegalArgumentException("Employee not found.");
-        }
 
-        // Validating input
-        long requestedDays = ChronoUnit.DAYS.between(vacationRequest.getVacationStart(), vacationRequest.getVacationEnd()) + 1;
-        if (requestedDays > employee.getRemainingVacationDays()) {
-            throw new IllegalArgumentException("Insufficient vacation days remaining.");
-        }
-        if (ChronoUnit.DAYS.between(LocalDate.now(), vacationRequest.getVacationStart()) < 14) {
-            throw new IllegalArgumentException("Vacation request must be submitted at least 14 days in advance.");
-        }
+        // Validating that employee exists
+        validateEmployeeExists(employee);
 
-        vacationRequest.setSubmittedAt(LocalDateTime.now());
+        // Validate Vacation Request
+        long requestedDays = calculateVacationDuration(vacationRequest);
+        validateVacationRequest(requestedDays, vacationRequest, employee.getRemainingVacationDays());
 
-        // Creating a new vacation request in the db, returning ID
+        // Calculating newRemainingVacationDays
+        long newRemainingVacationDays = employee.getRemainingVacationDays() - requestedDays;
+
+        // Applying changes
+        employeeService.updateRemainingVacationDays(employee.getId(), (int) newRemainingVacationDays);
         long id = vacationRequestRepository.create(vacationRequest);
-        employeeService.updateRemainingVacationDays(employee.getId(), employee.getRemainingVacationDays() - (int) requestedDays);
+        vacationRequest.setSubmittedAt(LocalDateTime.now());
         vacationRequest.setId(id);
-
         return vacationRequest;
 
     }
 
-    public void updateVacationRequest(long id, VacationRequest vacationRequest) {
-        Employee employee = employeeService.getEmployeeById(vacationRequest.getEmployeeId());
-        if (employee == null) {
-            throw new IllegalArgumentException("Employee not found.");
-        }
+    public void updateVacationRequest(long id, VacationRequest newVacationRequest) {
+        Employee employee = employeeService.getEmployeeById(newVacationRequest.getEmployeeId());
 
-        //Ca
-        VacationRequest oldVacationRequest = vacationRequestRepository.getVacationRequestById(id);
-        int oldDuration = (int) ChronoUnit.DAYS.between(oldVacationRequest.getVacationStart(), oldVacationRequest.getVacationEnd()) + 1;
+        // Validating Employee input
+        validateEmployeeExists(employee);
 
-        // Validating input
-        long requestedDays = ChronoUnit.DAYS.between(vacationRequest.getVacationStart(), vacationRequest.getVacationEnd()) + 1;
-        if (requestedDays > employee.getRemainingVacationDays()) {
-            throw new IllegalArgumentException("Insufficient vacation days remaining.");
-        }
-        if (ChronoUnit.DAYS.between(LocalDate.now(), vacationRequest.getVacationStart()) < 14) {
-            throw new IllegalArgumentException("Vacation request must be submitted at least 14 days in advance.");
-        }
+        // Calculate actual remaining days
+        long currentRemainingVacationDays = calculateRemainingVacationDaysAfterDeletion(id, employee);
 
-        vacationRequest.setSubmittedAt(LocalDateTime.now());
-        vacationRequestRepository.updateVacationRequest(id, vacationRequest);
-        employeeRepository.updateRemainingVacationDays(id, oldDuration);
+        // Validate Vacation Request
+        long requestedDays = calculateVacationDuration(newVacationRequest);
+        validateVacationRequest(requestedDays, newVacationRequest, currentRemainingVacationDays);
+
+        // Calculating newRemainingVacationDays
+        long newRemainingVacationDays = currentRemainingVacationDays - requestedDays;
+
+        //Applying changes
+        employeeService.updateRemainingVacationDays(newVacationRequest.getEmployeeId(), (int) (newRemainingVacationDays));
+        vacationRequestRepository.updateVacationRequest(id, newVacationRequest);
+        newVacationRequest.setSubmittedAt(LocalDateTime.now());
     }
 
     public void deleteVacationRequest(Long id) {
-        if (!vacationRequestRepository.existsById(id)) {
-            throw new IllegalArgumentException("Vacation request not found.");
-        }
+        // Find relevant vacation Request, validate
+        VacationRequest vacationRequest = getVacationRequestById(id);
+        validateVacationRequestExists(vacationRequest);
 
+        // Find relevant employee, validate
+        Employee employee = employeeService.getEmployeeById(vacationRequest.getEmployeeId());
+        validateEmployeeExists(employee);
+
+        // Calculate deleted vacation duration and add it to current remaining vacation days
+        long vacationDuration = calculateVacationDuration(vacationRequest);
+        int updatedRemainingVacationDays = (int) (employee.getRemainingVacationDays() + vacationDuration);
+
+        // Apply changes
+        employeeService.updateRemainingVacationDays(employee.getId(), updatedRemainingVacationDays);
         vacationRequestRepository.deleteById(id);
     }
 
-    public List<VacationRequest> getFilteredVacationRequests(String name, LocalDateTime startDate, LocalDateTime endDate) {
+    // Calculate duration between days
+    private long calculateVacationDuration(VacationRequest vacationRequest) {
+        return ChronoUnit.DAYS.between(vacationRequest.getVacationStart(), vacationRequest.getVacationEnd()) + 1;
+    }
+
+    // Calculating remaining vacation days after deletion
+    private long calculateRemainingVacationDaysAfterDeletion(long oldId, Employee employee) {
+        long oldDuration = calculateVacationDuration(getVacationRequestById(oldId));
+        return oldDuration + employee.getRemainingVacationDays();
+    }
+
+    // Validating Vacation Request
+    private void validateVacationRequest(long requestedDays, VacationRequest vacationRequest, long remainingVacationDays) {
+        // Enough remaining vacation days
+        if (requestedDays > remainingVacationDays) {
+            throw new IllegalArgumentException("Insufficient vacation days remaining.");
+        }
+        // Atleast 14 days before requesting
+        if (ChronoUnit.DAYS.between(LocalDate.now(), vacationRequest.getVacationStart()) < 14) {
+            throw new IllegalArgumentException("Vacation request must be submitted at least 14 days in advance.");
+        }
+    }
+
+    // Check if vacation request exists
+    private void validateVacationRequestExists(VacationRequest vacationRequest) {
+        if (vacationRequest == null) {
+            throw new IllegalArgumentException("Vacation request not found.");
+        }
+    }
+
+    // Check if employee exists
+    private void validateEmployeeExists(Employee employee) {
+        if (employee == null) {
+            throw new IllegalArgumentException("Employee not found.");
+        }
+    }
+
+    // Find vacation request by id
+    private VacationRequest getVacationRequestById(Long id) {
+        return vacationRequestRepository.getVacationRequestById(id);
+    }
+
+    // Get filtered requests
+    public List<VacationRequest> getFilteredVacationRequests(long id, LocalDate startDate, LocalDate endDate) {
+        String name = employeeService.getEmployeeById(id).getEmployeeName();
         return vacationRequestRepository.getFiltered(name, startDate, endDate);
 
     }
