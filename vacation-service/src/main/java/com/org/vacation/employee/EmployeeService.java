@@ -1,4 +1,4 @@
-package com.kodality.vacation.employee;
+package com.org.vacation.employee;
 
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;

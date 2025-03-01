@@ -1,4 +1,4 @@
-package com.kodality.vacation.config;
+package com.org.vacation.config;
 
 import io.micronaut.context.annotation.Factory;
 import jakarta.inject.Singleton;

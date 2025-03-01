@@ -1,8 +1,8 @@
-package com.kodality.vacation.request;
+package com.org.vacation.request;
 
-import com.kodality.vacation.employee.Employee;
-import com.kodality.vacation.employee.EmployeeRepository;
-import com.kodality.vacation.employee.EmployeeService;
+import com.org.vacation.employee.Employee;
+import com.org.vacation.employee.EmployeeRepository;
+import com.org.vacation.employee.EmployeeService;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import javax.sql.DataSource;

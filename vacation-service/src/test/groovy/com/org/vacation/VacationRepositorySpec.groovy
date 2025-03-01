@@ -1,4 +1,4 @@
-package com.kodality.vacation
+package com.org.vacation
 
 class VacationRepositorySpec {
 }

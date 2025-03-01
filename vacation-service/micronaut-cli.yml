@@ -1,5 +1,5 @@
 applicationType: default
-defaultPackage: com.kodality.vacation
+defaultPackage: com.org.vacation
 testFramework: spock
 sourceLanguage: java
 buildTool: gradle

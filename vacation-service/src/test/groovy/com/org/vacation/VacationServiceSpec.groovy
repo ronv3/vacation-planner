@@ -1,10 +1,10 @@
-package com.kodality.vacation
+package com.org.vacation
 
-import com.kodality.vacation.employee.Employee
-import com.kodality.vacation.employee.EmployeeService
-import com.kodality.vacation.request.VacationRequest
-import com.kodality.vacation.request.VacationRequestRepository
-import com.kodality.vacation.request.VacationRequestService
+import com.org.vacation.employee.Employee
+import com.org.vacation.employee.EmployeeService
+import com.org.vacation.request.VacationRequest
+import com.org.vacation.request.VacationRequestRepository
+import com.org.vacation.request.VacationRequestService
 import io.micronaut.runtime.EmbeddedApplication
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Shared

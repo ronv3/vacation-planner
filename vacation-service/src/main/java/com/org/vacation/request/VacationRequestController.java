@@ -1,4 +1,4 @@
-package com.kodality.vacation.request;
+package com.org.vacation.request;
 
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.kodality.vacation.request;
+package com.org.vacation.request;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

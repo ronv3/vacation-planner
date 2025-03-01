@@ -1,4 +1,4 @@
-package com.kodality.vacation.employee;
+package com.org.vacation.employee;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

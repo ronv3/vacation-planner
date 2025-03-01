@@ -1,4 +1,4 @@
-package com.kodality.vacation.employee;
+package com.org.vacation.employee;
 
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;

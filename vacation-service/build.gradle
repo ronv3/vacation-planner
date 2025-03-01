@@ -6,7 +6,7 @@ plugins {
 }
 
 version = "0.1"
-group = "com.kodality.vacation"
+group = "com.org.vacation"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ dependencies {
 
 
 application {
-    mainClass.set("com.kodality.vacation.Application")
+    mainClass.set("com.org.vacation.Application")
 }
 java {
     sourceCompatibility = JavaVersion.toVersion("21")
@@ -46,7 +46,7 @@ micronaut {
     testRuntime("spock2")
     processing {
         incremental(true)
-        annotations("com.kodality.vacation.*")
+        annotations("com.org.vacation.*")
     }
     aot {
     // Please review carefully the optimizations enabled below

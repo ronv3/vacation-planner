@@ -1,4 +1,4 @@
-package com.kodality.vacation;
+package com.org.vacation;
 
 import io.micronaut.runtime.Micronaut;
 import org.slf4j.bridge.SLF4JBridgeHandler;

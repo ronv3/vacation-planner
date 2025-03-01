@@ -1,4 +1,4 @@
-package com.kodality.vacation.request;
+package com.org.vacation.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.micronaut.serde.annotation.Serdeable;

@@ -1,5 +1,5 @@
 # Vacation Planner
-This repository contains template applications (both backend and frontend) for "Vacation Planner" test assignment.
+This repository contains template applications (both backend and frontend) for "Vacation Planner" exercise.
 
 ## Prerequisites
 
@@ -45,5 +45,4 @@ ng serve
 and navigate to `http://localhost:4200` in your browser. You should see a very basic list of requested vacations.
 
 #
-**Happy coding!**
 # vacation-planner
